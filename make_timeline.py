@@ -6,6 +6,7 @@ import svgwrite
 
 import datetime
 import json
+import argparse
 import os.path
 import sys
 
@@ -108,6 +109,7 @@ class Timeline:
             self.tk_root = Tkinter.Tk()
         except _tkinter.TclError:
             print('_tkinter.TclError is raised')
+            print('running without tkinter')
             self.use_tkinter = False
         self.fonts = {}
 
@@ -419,13 +421,21 @@ def usage():
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print('missing input filename')
-        usage()
-    filename = sys.argv[1]
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-i', '--input', dest='infile', required=True,
+        help='specify an input json file')
+    parser.add_argument(
+        '-o', '--output', dest='outfile',
+        default='out.svg', help='specify an output svg file')
+    args = parser.parse_args()
+    filename = args.infile
     if not os.path.isfile(filename):
         print('file %s not found' % filename)
         sys.exit(-1)
+
     timeline = Timeline(filename)
     timeline.build()
-    print(timeline.to_string().encode('utf-8'))
+    with open(args.outfile, 'w') as o:
+        o.write(timeline.to_string())
+    print('Done. output is %s' % args.outfile)
