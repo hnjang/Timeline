@@ -311,9 +311,11 @@ class Timeline:
             if writing_mode == 'tb':
                 transform = 'rotate(180, %i, 0)' % x
                 y = 10
+                h = text_width + y
             else:
                 transform = 'translate(%i, 0)' % int(text_width / 2)
                 (x, y, level) = self.tick_leveler(x, text_width)
+                h = text_height + x
 
             self.svg_groups['tick_labels'].add(self.drawing.text(
                 label,
@@ -335,7 +337,6 @@ class Timeline:
                 tick = self.svg_groups['tick_labels'].add(line)
                 tick.dasharray([3, 3])
 
-            h = text_width + y
             max_label_height = max(max_label_height, h)
 
         return max_label_height
