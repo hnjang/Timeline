@@ -139,7 +139,8 @@ class Timeline:
         self.create_eras(y_era, y_axis, height)
         self.create_era_axis_labels()
 
-        self.draw_axis_labels()
+        # add height of labels. 'height' is determined, finally.
+        height += self.draw_axis_labels()
 
         # translate the axis group and add it to the drawing
         global_group = self.drawing.g()
@@ -295,7 +296,7 @@ class Timeline:
         self.ticks[(label, x)] = fill
 
     def draw_axis_labels(self):
-        min_y = 0
+        max_label_height = 0
         level = 0
         writing_mode = self.data.get('tick_orientation', 'tb')
 
@@ -335,8 +336,9 @@ class Timeline:
                 tick.dasharray([3, 3])
 
             h = text_width + y
+            max_label_height = max(max_label_height, h)
 
-        return
+        return max_label_height
 
 
     def create_callouts(self):
