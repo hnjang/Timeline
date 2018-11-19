@@ -97,10 +97,13 @@ class Timeline:
         self.total_secs = (self.date1 - self.date0).total_seconds()
 
         # set up some params
-        self.callout_size = (10, 15, 10)  # width, height, increment
-        self.text_fudge = (3, 1.5)
         self.tick_format = self.data.get('tick_format', None)
-        self.font_size = self.data.get('font_size', '6pt')
+        self.zoom_ratio = float(self.data.get('zoom_ratio', '1.0'))
+        self.font_size = '%dpt'%(int(self.zoom_ratio * 5))
+        callout_size = [10, 15, 10]  # width, height, increment
+        self.callout_size = tuple([int(__*self.zoom_ratio) for __ in callout_size])
+        text_fudge = [3, 1.5]
+        self.text_fudge = tuple([int(__*self.zoom_ratio) for __ in text_fudge])
         self.markers = {}
         self.ticks = {}
 
@@ -306,7 +309,7 @@ class Timeline:
 
         for tick in sorted_ticks:
             (label, x, fill) = tick
-            text_width, text_height = self.get_text_metrics('Helvetica', 6,
+            text_width, text_height = self.get_text_metrics('Helvetica',
                                                             label)
 
             if writing_mode == 'tb':
@@ -367,7 +370,7 @@ class Timeline:
         # add callouts, one by one, making sure they don't overlap
         for event_date in sorted_dates:
             (event, event_color) = inv_callouts[event_date].pop()
-            text_width = self.get_text_metrics('Helvetica', 6, event)[0]
+            text_width = self.get_text_metrics('Helvetica', event)[0]
 
             x = self.get_starting_postion(event_date)
             if x < 0:
@@ -404,10 +407,11 @@ class Timeline:
 
         return get_level.min_y
 
-    def get_text_metrics(self, family, size, text):
+    def get_text_metrics(self, family, text):
         if not self.use_tkinter:
             # NOTE: change it not to use hard-coded value
             return (len(text)*10, 10)
+        size = int(self.font_size[:-2])
         font = None
         key = (family, size)
         if key in self.fonts:
