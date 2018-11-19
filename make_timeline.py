@@ -100,6 +100,7 @@ class Timeline:
         self.callout_size = (10, 15, 10)  # width, height, increment
         self.text_fudge = (3, 1.5)
         self.tick_format = self.data.get('tick_format', None)
+        self.font_size = self.data.get('font_size', '6pt')
         self.markers = {}
         self.ticks = {}
 
@@ -226,7 +227,7 @@ class Timeline:
                 stroke='none',
                 fill=fill,
                 font_family='Helvetica',
-                font_size='6pt',
+                font_size=self.font_size,
                 text_anchor='middle',
                 ))
 
@@ -323,7 +324,7 @@ class Timeline:
                 stroke='none',
                 fill=fill,
                 font_family='Helvetica',
-                font_size='6pt',
+                font_size=self.font_size,
                 text_anchor='end',
                 writing_mode=writing_mode,
                 transform=transform,
@@ -392,7 +393,7 @@ class Timeline:
                 stroke='none',
                 fill=event_color,
                 font_family='Helvetica',
-                font_size='6pt',
+                font_size=self.font_size,
                 text_anchor='end',
                 ))
             self.add_axis_label(event_date, str(event_date),
